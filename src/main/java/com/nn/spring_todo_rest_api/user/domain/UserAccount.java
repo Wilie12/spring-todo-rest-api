@@ -2,10 +2,9 @@ package com.nn.spring_todo_rest_api.user.domain;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +23,15 @@ public class UserAccount implements UserDetails {
     private List<GrantedAuthority> authorities;
 
     protected UserAccount() {}
+
+    public UserAccount(String username, String password) {
+        this.username = username;
+        this.password = password;
+        expired = false;
+        locked = false;
+        enabled = true;
+        authorities = List.of(new SimpleGrantedAuthority("USER"));
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
