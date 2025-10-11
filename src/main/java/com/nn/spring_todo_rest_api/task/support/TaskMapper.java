@@ -1,0 +1,18 @@
+package com.nn.spring_todo_rest_api.task.support;
+
+import com.nn.spring_todo_rest_api.task.api.response.TaskResponse;
+import com.nn.spring_todo_rest_api.task.domain.Task;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TaskMapper {
+
+    public TaskResponse toTaskResponse(Task task) {
+        return new TaskResponse(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.isCompleted()
+        );
+    }
+}
