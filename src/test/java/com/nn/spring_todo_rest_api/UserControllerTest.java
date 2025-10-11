@@ -2,10 +2,13 @@ package com.nn.spring_todo_rest_api;
 
 import com.nn.spring_todo_rest_api.user.api.request.UserRequest;
 import com.nn.spring_todo_rest_api.user.controller.UserController;
+import com.nn.spring_todo_rest_api.user.service.UserAccountDetailsService;
 import com.nn.spring_todo_rest_api.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -23,9 +26,10 @@ public class UserControllerTest {
     MockMvc mvc;
     @MockitoBean
     UserService userService;
+    @MockitoBean
+    UserAccountDetailsService userAccountDetailsService;
 
     @Test
-    @WithMockUser
     void registerUserShouldWork() throws Exception {
         mvc.perform(post("/api/v1/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
