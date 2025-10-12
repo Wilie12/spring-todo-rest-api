@@ -1,6 +1,8 @@
 package com.nn.spring_todo_rest_api.task.service;
 
+import com.nn.spring_todo_rest_api.task.api.request.TaskRequest;
 import com.nn.spring_todo_rest_api.task.api.response.TaskResponse;
+import com.nn.spring_todo_rest_api.task.domain.Task;
 import com.nn.spring_todo_rest_api.task.repository.TaskRepository;
 import com.nn.spring_todo_rest_api.task.support.TaskMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,5 +26,11 @@ public class TaskService {
                 .stream()
                 .map(taskMapper::toTaskResponse)
                 .toList();
+    }
+
+    @PreAuthorize("hasRole('USER') && #username == authentication.name")
+    public TaskResponse create(TaskRequest taskRequest, String username) {
+        Task task = taskRepository.save(taskMapper.toTask(taskRequest, username));
+        return taskMapper.toTaskResponse(task);
     }
 }

@@ -1,5 +1,6 @@
 package com.nn.spring_todo_rest_api;
 
+import com.nn.spring_todo_rest_api.task.api.request.TaskRequest;
 import com.nn.spring_todo_rest_api.task.api.response.TaskResponse;
 import com.nn.spring_todo_rest_api.task.domain.Task;
 import com.nn.spring_todo_rest_api.task.repository.TaskRepository;
@@ -11,11 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 // TODO - tests are not reading @PreAuthorize annotation from Service
@@ -60,5 +61,23 @@ public class TaskServiceTest {
 
         // then
 //        assertThrows(AccessDeniedException.class, () -> taskService.findAllForUsername("alice"));
+    }
+
+    @Test
+    @WithMockUser(username = "alice")
+    void createTaskShouldReturnTheSameData() {
+        // given
+        Task task = new Task("alice", "clean", "desc");
+        when(taskRepository.save(any())).thenReturn(task);
+        when(taskMapper.toTask(any(), any())).thenReturn(task);
+        when(taskMapper.toTaskResponse(any()))
+                .thenReturn(new TaskResponse(1L, "clean", "desc", false));
+
+        // when
+        TaskResponse taskCreated = taskService.create(new TaskRequest("clean", "desc"), "alice");
+
+        // then
+        assertThat(taskCreated.title()).isEqualTo(task.getTitle());
+        assertThat(taskCreated.description()).isEqualTo(task.getDescription());
     }
 }

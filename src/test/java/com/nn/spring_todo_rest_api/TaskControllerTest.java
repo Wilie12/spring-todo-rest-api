@@ -1,5 +1,6 @@
 package com.nn.spring_todo_rest_api;
 
+import com.nn.spring_todo_rest_api.task.api.request.TaskRequest;
 import com.nn.spring_todo_rest_api.task.controller.TaskController;
 import com.nn.spring_todo_rest_api.task.service.TaskService;
 import com.nn.spring_todo_rest_api.user.service.UserAccountDetailsService;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,5 +34,21 @@ public class TaskControllerTest {
                 .andExpect(status().isOk());
 
         verify(taskService).findAllForUsername("alice");
+    }
+
+    @Test
+    @WithMockUser(username = "alice")
+    void createTaskShouldWork() throws Exception {
+        mvc.perform(post("/api/v1/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                          "title": "task",
+                          "description": "desc"
+                        }
+                        """))
+                .andExpect(status().isCreated());
+
+        verify(taskService).create(new TaskRequest("task", "desc"), "alice");
     }
 }
