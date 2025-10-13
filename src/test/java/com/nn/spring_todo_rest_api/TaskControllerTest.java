@@ -38,6 +38,15 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(username = "alice")
+    void getOneShouldWork() throws Exception {
+        mvc.perform(get("/api/v1/tasks/1"))
+                .andExpect(status().isOk());
+
+        verify(taskService).findOne(1L, "alice");
+    }
+
+    @Test
+    @WithMockUser(username = "alice")
     void createTaskShouldWork() throws Exception {
         mvc.perform(post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
