@@ -51,4 +51,13 @@ public class TaskControllerTest {
 
         verify(taskService).create(new TaskRequest("task", "desc"), "alice");
     }
+
+    @Test
+    @WithMockUser(username = "alice")
+    void deleteTaskShouldWork() throws Exception {
+        mvc.perform(delete("/api/v1/tasks/1"))
+                .andExpect(status().isNoContent());
+
+        verify(taskService).delete(1L, "alice");
+    }
 }

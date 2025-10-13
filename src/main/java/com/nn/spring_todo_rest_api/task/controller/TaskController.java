@@ -39,4 +39,15 @@ public class TaskController {
                 .status(HttpStatus.CREATED)
                 .body(task);
     }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long taskId,
+            Authentication authentication
+    ) {
+        taskService.delete(taskId, authentication.getName());
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }

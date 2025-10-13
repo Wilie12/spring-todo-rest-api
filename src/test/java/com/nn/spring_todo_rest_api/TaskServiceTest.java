@@ -13,10 +13,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 // TODO - tests are not reading @PreAuthorize annotation from Service
@@ -79,5 +81,20 @@ public class TaskServiceTest {
         // then
         assertThat(taskCreated.title()).isEqualTo(task.getTitle());
         assertThat(taskCreated.description()).isEqualTo(task.getDescription());
+    }
+
+    @Test
+    @WithMockUser(username = "alice")
+    void deleteTaskShouldWork() {
+        // given
+        Task taskToDelete = new Task("alice", "title", "desc");
+        when(taskRepository.findById(any())).thenReturn(Optional.of(taskToDelete));
+
+        // when
+        taskService.delete(taskToDelete.getId(), "alice");
+
+        // then
+        verify(taskRepository).findById(taskToDelete.getId());
+        verify(taskRepository).deleteById(taskToDelete.getId());
     }
 }
