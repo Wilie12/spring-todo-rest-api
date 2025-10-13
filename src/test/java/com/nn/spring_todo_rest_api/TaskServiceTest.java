@@ -56,13 +56,31 @@ public class TaskServiceTest {
         // given
         Task task = new Task("alice", "clean", "desc");
         when(taskRepository.findByUsername("alice")).thenReturn(List.of(task));
-        when(taskMapper.toTaskResponse(task)).thenReturn(new TaskResponse(1, "alice", "clean", false));
+        when(taskMapper.toTaskResponse(task))
+                .thenReturn(new TaskResponse(1, "alice", "clean", false));
 
         // when
         List<TaskResponse> tasks = taskService.findAllForUsername("alice");
 
         // then
 //        assertThrows(AccessDeniedException.class, () -> taskService.findAllForUsername("alice"));
+    }
+
+    @Test
+    @WithMockUser(username = "alice")
+    void findOneShouldReturnCorrectTask() {
+        // given
+        Task task = new Task("alice", "clean", "desc");
+        when(taskRepository.findById(any())).thenReturn(Optional.of(task));
+        when(taskMapper.toTaskResponse(any()))
+                .thenReturn(new TaskResponse(1, "clean", "desc", false));
+
+        // when
+        TaskResponse taskResponse = taskService.findOne(task.getId(), "alice");
+
+        // then
+        assertThat(taskResponse.title()).isEqualTo(task.getTitle());
+        assertThat(taskResponse.description()).isEqualTo(task.getDescription());
     }
 
     @Test
