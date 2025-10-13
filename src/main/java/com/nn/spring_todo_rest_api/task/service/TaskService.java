@@ -36,7 +36,7 @@ public class TaskService {
     }
 
     @PreAuthorize("hasRole('USER') && #username == authentication.name")
-    public void delete(long taskId) {
+    public void delete(long taskId, String username) {
         Task task = taskRepository
                 .findById(taskId)
                 .orElseThrow(TaskExceptionSupplier.taskNotFound(taskId));

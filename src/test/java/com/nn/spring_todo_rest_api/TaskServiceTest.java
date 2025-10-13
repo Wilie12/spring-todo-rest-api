@@ -91,7 +91,7 @@ public class TaskServiceTest {
         when(taskRepository.findById(any())).thenReturn(Optional.of(taskToDelete));
 
         // when
-        taskService.delete(taskToDelete.getId());
+        taskService.delete(taskToDelete.getId(), "alice");
 
         // then
         verify(taskRepository).findById(taskToDelete.getId());
