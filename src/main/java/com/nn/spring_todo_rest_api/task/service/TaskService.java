@@ -21,12 +21,19 @@ public class TaskService {
         this.taskMapper = taskMapper;
     }
 
-    @PreAuthorize("#username == authentication.name")
+    @PreAuthorize("hasRole('USER') && #username == authentication.name")
     public List<TaskResponse> findAllForUsername(String username) {
         return taskRepository.findByUsername(username)
                 .stream()
                 .map(taskMapper::toTaskResponse)
                 .toList();
+    }
+
+    @PreAuthorize("hasRole('USER') && #username == authentication.name")
+    public TaskResponse findOne(Long taskId, String username) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(TaskExceptionSupplier.taskNotFound(taskId));
+        return taskMapper.toTaskResponse(task);
     }
 
     @PreAuthorize("hasRole('USER') && #username == authentication.name")

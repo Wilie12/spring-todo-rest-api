@@ -29,6 +29,17 @@ public class TaskController {
                 .body(tasks);
     }
 
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> get(
+            @PathVariable Long taskId,
+            Authentication authentication
+    ) {
+        TaskResponse task = taskService.findOne(taskId, authentication.getName());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(task);
+    }
+
     @PostMapping
     public ResponseEntity<TaskResponse> create(
             @RequestBody TaskRequest taskRequest,
