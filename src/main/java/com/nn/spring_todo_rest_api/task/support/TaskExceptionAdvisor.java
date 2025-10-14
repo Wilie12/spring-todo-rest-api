@@ -1,6 +1,6 @@
 package com.nn.spring_todo_rest_api.task.support;
 
-import com.nn.spring_todo_rest_api.task.shared.api.response.ErrorMessageResponse;
+import com.nn.spring_todo_rest_api.shared.api.response.ErrorMessageResponse;
 import com.nn.spring_todo_rest_api.task.support.exception.TaskNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
