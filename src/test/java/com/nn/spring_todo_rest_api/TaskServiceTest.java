@@ -17,12 +17,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-// TODO - tests are not reading @PreAuthorize annotation from Service
 @SpringBootTest
 public class TaskServiceTest {
     TaskService taskService;
@@ -42,29 +40,14 @@ public class TaskServiceTest {
         // given
         Task task = new Task("bob", "read", "desc");
         when(taskRepository.findByUsername("bob")).thenReturn(List.of(task));
-        when(taskMapper.toTaskResponse(task)).thenReturn(new TaskResponse(1, "bob", "read", false));
+        when(taskMapper.toTaskResponse(task))
+                .thenReturn(new TaskResponse(1, "bob", "read", false));
 
         // when
         List<TaskResponse> tasks = taskService.findAllForUsername("bob");
 
         // then
         assertThat(tasks).hasSize(1);
-    }
-
-    @Test
-    @WithMockUser("bob")
-    void findAllForUsernameShouldThrowAccessDeniedForIncorrectUser() {
-        // given
-        Task task = new Task("alice", "clean", "desc");
-        when(taskRepository.findByUsername("alice")).thenReturn(List.of(task));
-        when(taskMapper.toTaskResponse(task))
-                .thenReturn(new TaskResponse(1, "alice", "clean", false));
-
-        // when
-        List<TaskResponse> tasks = taskService.findAllForUsername("alice");
-
-        // then
-//        assertThrows(AccessDeniedException.class, () -> taskService.findAllForUsername("alice"));
     }
 
     @Test

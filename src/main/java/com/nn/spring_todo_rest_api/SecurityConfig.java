@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
-                                .requestMatchers("/api/v1/tasks/**").authenticated()
+                                .anyRequest().authenticated()
                 );
 
         return httpSecurity.build();
