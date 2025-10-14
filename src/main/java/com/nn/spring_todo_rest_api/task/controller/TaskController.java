@@ -1,6 +1,7 @@
 package com.nn.spring_todo_rest_api.task.controller;
 
 import com.nn.spring_todo_rest_api.task.api.request.TaskRequest;
+import com.nn.spring_todo_rest_api.task.api.request.TaskUpdateRequest;
 import com.nn.spring_todo_rest_api.task.api.response.TaskResponse;
 import com.nn.spring_todo_rest_api.task.service.TaskService;
 import org.springframework.http.HttpStatus;
@@ -60,5 +61,17 @@ public class TaskController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
+    }
+
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> update(
+            @PathVariable Long taskId,
+            @RequestBody TaskUpdateRequest taskUpdateRequest,
+            Authentication authentication
+    ) {
+        TaskResponse taskResponse = taskService.update(taskId, taskUpdateRequest, authentication.getName());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(taskResponse);
     }
 }

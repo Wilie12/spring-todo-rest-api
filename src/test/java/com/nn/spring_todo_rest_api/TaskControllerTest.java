@@ -1,6 +1,7 @@
 package com.nn.spring_todo_rest_api;
 
 import com.nn.spring_todo_rest_api.task.api.request.TaskRequest;
+import com.nn.spring_todo_rest_api.task.api.request.TaskUpdateRequest;
 import com.nn.spring_todo_rest_api.task.controller.TaskController;
 import com.nn.spring_todo_rest_api.task.service.TaskService;
 import com.nn.spring_todo_rest_api.user.service.UserAccountDetailsService;
@@ -68,5 +69,26 @@ public class TaskControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(taskService).delete(1L, "alice");
+    }
+
+    @Test
+    @WithMockUser(username = "alice")
+    void updateTaskShouldWork() throws Exception {
+        mvc.perform(put("/api/v1/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                          "title": "updatedTitle",
+                          "description": "updatedDescription",
+                          "isCompleted": false
+                        }
+                        """))
+                .andExpect(status().isOk());
+
+        verify(taskService).update(
+                1L,
+                new TaskUpdateRequest("updatedTitle", "updatedDescription", false),
+                "alice"
+        );
     }
 }

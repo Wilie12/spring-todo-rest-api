@@ -1,6 +1,7 @@
 package com.nn.spring_todo_rest_api;
 
 import com.nn.spring_todo_rest_api.task.api.request.TaskRequest;
+import com.nn.spring_todo_rest_api.task.api.request.TaskUpdateRequest;
 import com.nn.spring_todo_rest_api.task.api.response.TaskResponse;
 import com.nn.spring_todo_rest_api.task.domain.Task;
 import com.nn.spring_todo_rest_api.task.repository.TaskRepository;
@@ -89,7 +90,7 @@ public class TaskServiceTest {
         // given
         Task task = new Task("alice", "clean", "desc");
         when(taskRepository.save(any())).thenReturn(task);
-        when(taskMapper.toTask(any(), any())).thenReturn(task);
+        when(taskMapper.toTask(any(TaskRequest.class), any(String.class))).thenReturn(task);
         when(taskMapper.toTaskResponse(any()))
                 .thenReturn(new TaskResponse(1L, "clean", "desc", false));
 
@@ -114,5 +115,28 @@ public class TaskServiceTest {
         // then
         verify(taskRepository).findById(taskToDelete.getId());
         verify(taskRepository).deleteById(taskToDelete.getId());
+    }
+
+    @Test
+    @WithMockUser(username = "alice")
+    void updateTaskShouldReturnUpdatedData() {
+        // given
+        Task taskToUpdate = new Task("alice", "wrongTitle", "wrongDesc");
+        when(taskRepository.findById(any())).thenReturn(Optional.of(taskToUpdate));
+        when(taskMapper.toTask(any(Task.class), any(TaskUpdateRequest.class)))
+                .thenReturn(new Task("alice", "correctTitle", "correctDesc"));
+        when(taskMapper.toTaskResponse(any()))
+                .thenReturn(new TaskResponse(1L, "correctTitle", "correctDesc", false));
+
+        // when
+        TaskResponse taskResponse = taskService.update(
+                1L,
+                new TaskUpdateRequest("correctTitle", "correctDesc", false),
+                "alice"
+        );
+
+        // then
+        assertThat(taskResponse.title()).isEqualTo("correctTitle");
+        assertThat(taskResponse.description()).isEqualTo("correctDesc");
     }
 }
