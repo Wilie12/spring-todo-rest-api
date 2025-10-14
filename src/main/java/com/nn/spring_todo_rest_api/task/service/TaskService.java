@@ -1,6 +1,7 @@
 package com.nn.spring_todo_rest_api.task.service;
 
 import com.nn.spring_todo_rest_api.task.api.request.TaskRequest;
+import com.nn.spring_todo_rest_api.task.api.request.TaskUpdateRequest;
 import com.nn.spring_todo_rest_api.task.api.response.TaskResponse;
 import com.nn.spring_todo_rest_api.task.domain.Task;
 import com.nn.spring_todo_rest_api.task.repository.TaskRepository;
@@ -48,5 +49,14 @@ public class TaskService {
                 .findById(taskId)
                 .orElseThrow(TaskExceptionSupplier.taskNotFound(taskId));
        taskRepository.deleteById(taskId);
+    }
+
+    @PreAuthorize("hasRole('USER') && #username == authentication.name")
+    public TaskResponse update(Long taskId, TaskUpdateRequest taskUpdateRequest, String username) {
+        Task task = taskRepository
+                .findById(taskId)
+                .orElseThrow(TaskExceptionSupplier.taskNotFound(taskId));
+        taskRepository.save(taskMapper.toTask(task, taskUpdateRequest));
+        return taskMapper.toTaskResponse(task);
     }
 }
