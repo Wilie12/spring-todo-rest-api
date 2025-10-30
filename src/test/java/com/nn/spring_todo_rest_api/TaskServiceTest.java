@@ -7,11 +7,13 @@ import com.nn.spring_todo_rest_api.task.domain.Task;
 import com.nn.spring_todo_rest_api.task.repository.TaskRepository;
 import com.nn.spring_todo_rest_api.task.service.TaskService;
 import com.nn.spring_todo_rest_api.task.support.TaskMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,21 +23,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestSecurityConfig.class)
 public class TaskServiceTest {
+    @Autowired
     TaskService taskService;
     @MockitoBean
     TaskRepository taskRepository;
     @MockitoBean
     TaskMapper taskMapper;
 
-    @BeforeEach
-    void setUp() {
-        taskService = new TaskService(taskRepository, taskMapper);
-    }
-
     @Test
-    @WithMockUser("bob")
+    @WithMockUser(username = "bob", authorities = "USER")
     void findAllForUsernameShouldReturnTasksForCorrectUser() {
         // given
         Task task = new Task("bob", "read", "desc");
@@ -51,7 +50,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "alice")
+    @WithMockUser(username = "alice", authorities = "USER")
     void findOneShouldReturnCorrectTask() {
         // given
         Task task = new Task("alice", "clean", "desc");
@@ -68,7 +67,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "alice")
+    @WithMockUser(username = "alice", authorities = "USER")
     void createTaskShouldReturnTheSameData() {
         // given
         Task task = new Task("alice", "clean", "desc");
@@ -86,7 +85,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "alice")
+    @WithMockUser(username = "alice", authorities = "USER")
     void deleteTaskShouldWork() {
         // given
         Task taskToDelete = new Task("alice", "title", "desc");
@@ -101,7 +100,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "alice")
+    @WithMockUser(username = "alice", authorities = "USER")
     void updateTaskShouldReturnUpdatedData() {
         // given
         Task taskToUpdate = new Task("alice", "wrongTitle", "wrongDesc");

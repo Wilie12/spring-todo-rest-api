@@ -1,6 +1,7 @@
 package com.nn.spring_todo_rest_api;
 
 import com.nn.spring_todo_rest_api.user.api.request.UserRequest;
+import com.nn.spring_todo_rest_api.user.config.SecurityConfig;
 import com.nn.spring_todo_rest_api.user.controller.UserController;
 import com.nn.spring_todo_rest_api.user.service.UserAccountDetailsService;
 import com.nn.spring_todo_rest_api.user.service.UserService;
@@ -23,8 +24,6 @@ public class UserControllerTest {
     MockMvc mvc;
     @MockitoBean
     UserService userService;
-    @MockitoBean
-    UserAccountDetailsService userAccountDetailsService;
 
     @Test
     void registerUserShouldWork() throws Exception {

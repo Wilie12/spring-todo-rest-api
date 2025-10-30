@@ -4,6 +4,7 @@ import com.nn.spring_todo_rest_api.task.api.request.TaskRequest;
 import com.nn.spring_todo_rest_api.task.api.request.TaskUpdateRequest;
 import com.nn.spring_todo_rest_api.task.controller.TaskController;
 import com.nn.spring_todo_rest_api.task.service.TaskService;
+import com.nn.spring_todo_rest_api.user.config.SecurityConfig;
 import com.nn.spring_todo_rest_api.user.service.UserAccountDetailsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,6 @@ public class TaskControllerTest {
     MockMvc mvc;
     @MockitoBean
     TaskService taskService;
-    @MockitoBean
-    UserAccountDetailsService userAccountDetailsService;
 
     @Test
     @WithMockUser(username = "alice")
